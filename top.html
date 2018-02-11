@@ -35,8 +35,8 @@ canvas.width = wW;
 function S() {
     var th = this;
     th.clouds = [];
-    th.cloud = new Image(377, 329);
-    th.cloud.src = 'cloud.png';
+    th.cloud = new Image(221, 275);
+    th.cloud.src = 'cloud2.png';
     th.mouse = {
         x: 0,
         y: 0
@@ -63,9 +63,7 @@ S.prototype.addCloud = function(p) {
 
 S.prototype.createCloud = function(coef) {
     var th = this,
-        dR = ((Math.random() * 8) - 1) / 35,
         prevScale = null,
-        r = 48,
         alpha = th.rand(0.19, 0.6),
         w = th.rand(200, 377);
 
@@ -78,12 +76,12 @@ S.prototype.createCloud = function(coef) {
         mouseTouch: false,
         blur: th.rand(35, 70),
         draw: function(c, time) {
-            r += dR;
             c.save();
-            c.translate(this.x, this.y); // двинуть тучу
+            var _x = this.x + (50 * time * coef);
+            c.translate(_x, this.y); // двинуть тучу
             c.translate(w / 2, w / 2); //чтобы крутилось по центру тучи
-            c.rotate(coef * (r * Math.PI / 180));
-            time += 0.1;
+            c.rotate(90 * (Math.PI / 180));
+           // time += 0.1;
 
             if (!prevScale && time >= 0.8) { 
                 prevScale = time; 
@@ -105,7 +103,6 @@ S.prototype.createCloud = function(coef) {
                 prevScale = time;
             }
             
-            c.scale(prevScale, prevScale);
             c.globalAlpha = this.a;
             c.drawImage(th.cloud, -w / 2, -w / 2, w, w);
             c.filter = 'blur(' + this.blur + 'px)';
