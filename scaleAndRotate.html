@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CH5EX9: Moving In A Circle</title>
+<style type="text/css">
+   body, html {
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+   }
+   .top {
+       background: url('top_mountain_back.jpg');
+       background-size: cover;
+       height: 100%;
+   }
+</style>
+</head>
+<body>
+<div class="top">
+    <canvas id="canvas"></canvas>
+</div>
+
+<script type="text/javascript">
+var canvas = document.getElementById('canvas'),
+    ctx = canvas.getContext('2d'),
+    wH = window.innerHeight,
+    wW = window.innerWidth,
+    mouse = {
+        x: 0,
+        y: 0
+    }
+
+canvas.height = wH;
+canvas.width = wW;
+
+function S() {
+    var th = this;
+    th.clouds = [];
+    th.cloud = new Image(377, 329);
+    th.cloud.src = 'cloud.png';
+
+    window.addEventListener('load', function() {
+        th.setup();
+    })
+}
+
+S.prototype.setup = function() {
+    var th = this;
+    th.render();
+}
+
+S.prototype.rand = function( min, max )
+{
+    return Math.random() * ( max - min) + min;
+}
+
+S.prototype.addCloud = function() {
+    this.clouds.push(this.createCloud());
+}
+
+S.prototype.createCloud = function() {
+    var th = this,
+        dR = ((Math.random() * 8) - 1) / 10,
+        r = 48;
+        //this.r * Math.PI / 180
+    return {
+        x: 0,
+        y:0,
+        draw: function(c, time) {
+            r += dR;
+            c.save();
+            //c.translate(377 / 2, 0);
+            c.translate(220, 220); // двинуть тучу
+            c.translate(377 / 2, 377 / 2); //чтобы крутилось по центру тучи
+            c.rotate(r * Math.PI / 180)
+            c.scale(time, time);
+            c.drawImage(th.cloud, -377 / 2, -377 / 2, 377, 377);
+            c.restore();
+        }
+    }
+}
+
+S.prototype.render = function() {
+    var th = this,
+        index = 0,
+        p = 1;
+    
+    for (var i = 0; i < 1; i++) {
+        th.addCloud();
+    }
+
+    function f() {
+            ctx.clearRect(0, 0, wW, wH);
+            var t = Math.abs(Math.sin(index));
+            th.clouds.map(function(cloud) {
+                cloud.draw(ctx, t);
+            });
+            index += 0.01;
+            requestAnimationFrame(f);
+    }
+
+    f();
+}
+
+var s = new S();
+</script>
+</body>
+</html>
